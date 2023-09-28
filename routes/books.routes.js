@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 
-const Book = require('../models/Books.model');
+const Books = require('../models/Books.model');
 
 router.get('/books', (req, res) => {
   res.send('books route is working');
@@ -11,7 +11,7 @@ router.get('/books', (req, res) => {
 router.post('/books', (req, res, next) => {
   const {
     isbn,
-    name,
+    title,
     author,
     catagory,
     language,
@@ -21,9 +21,9 @@ router.post('/books', (req, res, next) => {
     avilable
   } = req.body;
   console.log(author, avilable);
-  return Book.create({
+  return Books.create({
     isbn,
-    name,
+    title,
     author,
     catagory,
     language,
@@ -37,10 +37,31 @@ router.post('/books', (req, res, next) => {
 });
 
 //  GET /api/books -  Retrieves all of the books
-router.get('/books', (req, res, next) => {
-  Books.find()
-    .then((allBooks) => res.json(allBooks))
-    .catch((err) => res.json(err));
+router.get('/books/search', (req, res, next) => {
+  // search with title, author
+  //
+  const { query, category } = req.query;
+  const reg = new RegExp(query, 'i');
+
+  if (category === 'title') {
+    Books.find({ title: { $regex: reg } })
+      .then((books) => {
+        res.status(200).json(books);
+      })
+      .catch(() => {
+        res.status(500).send('Server error');
+      });
+  }
+
+  if (category === 'author') {
+    Books.find({ author: { $regex: reg } })
+      .then((books) => {
+        res.status(200).json(books);
+      })
+      .catch(() => {
+        res.status(500).send('Server error');
+      });
+  }
 });
 
 //  GET /api/books/:bookId -  Retrieves a specific book by id
@@ -52,7 +73,7 @@ router.get('/books/:bookId', (req, res, next) => {
     return;
   }
 
-  Book.findById(bookId)
+  Books.findById(bookId)
     .then((book) => res.status(200).json(book))
     .catch((error) => res.json(error));
 });
@@ -66,7 +87,7 @@ router.put('/books/:bookId', (req, res, next) => {
     return;
   }
 
-  Book.findByIdAndUpdate(bookId, req.body, { new: true })
+  Books.findByIdAndUpdate(bookId, req.body, { new: true })
     .then((updatedBook) => res.json(updatedBook))
     .catch((error) => res.json(error));
 });
@@ -80,7 +101,7 @@ router.delete('/books/:bookId', (req, res, next) => {
     return;
   }
 
-  Book.findByIdAndRemove(bookId)
+  Books.findByIdAndRemove(bookId)
     .then(() =>
       res.json({
         message: `Project with ${bookId} is removed successfully.`

@@ -7,9 +7,9 @@ const bookSchema = new Schema(
       type: String,
       required: [true, 'ISBN number required']
     },
-    name: {
+    title: {
       type: String,
-      required: [true, 'Name required']
+      required: [true, 'Title required']
     },
     author: {
       type: String,
@@ -23,7 +23,7 @@ const bookSchema = new Schema(
       type: String,
       required: [true, 'Language required']
     },
-    published: { type: String, required: [true, 'Title required'] },
+    published: { type: String, required: [true, 'Published required'] },
     location: {
       type: String,
       required: [true, 'Location required']
