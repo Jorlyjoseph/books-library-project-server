@@ -1,8 +1,13 @@
+const { ObjectId } = require('bson');
 const { Schema, model } = require('mongoose');
 
 // TODO: Please make sure you edit the User model to whatever makes sense in this case
 const bookSchema = new Schema(
   {
+    reader: {
+      type: ObjectId,
+      ref: 'Readers'
+    },
     isbn: {
       type: String,
       required: [true, 'ISBN number required']
@@ -32,7 +37,7 @@ const bookSchema = new Schema(
       type: String,
       required: [true, 'Description required']
     },
-    avilable: {
+    available: {
       type: Boolean,
       required: [true, 'Availability required']
     }
