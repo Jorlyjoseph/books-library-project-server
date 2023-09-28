@@ -110,4 +110,12 @@ router.delete('/books/:bookId', (req, res, next) => {
     .catch((error) => res.json(error));
 });
 
+router.post('/books/trasaction', (req, res, next) => {
+  // {
+  //   readerId,
+  //   bookId,
+  //   action: 'return' | 'lent'
+  // }
+});
+
 module.exports = router;
