@@ -1,49 +1,49 @@
 const { Schema, model } = require('mongoose');
 
 // TODO: Please make sure you edit the User model to whatever makes sense in this case
-const userSchema = new Schema(
+const bookSchema = new Schema(
   {
     isbn: {
       type: String,
-      required: true,
+      required: [true, 'ISBN number required']
     },
     name: {
       type: String,
-      required: true,
+      required: [true, 'Name required']
     },
     author: {
       type: String,
-      required: true,
+      required: [true, 'Author required']
     },
     catagory: {
       type: String,
-      required: true,
+      required: [true, 'Category required']
     },
     language: {
       type: String,
-      required: true,
+      required: [true, 'Language required']
     },
-    published: { String, required: true },
+    published: { type: String, required: [true, 'Title required'] },
     location: {
       type: String,
-      required: true,
+      required: [true, 'Location required']
     },
     description: {
       type: String,
-      required: true,
+      required: [true, 'Description required']
     },
     avilable: {
       type: Boolean,
-      required: true,
-    },
+      required: [true, 'Availability required']
+    }
   },
 
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`
-    timestamps: true,
+    timestamps: true
   }
 );
 
-const User = model('User', userSchema);
+const Book = model('Book', bookSchema);
 
-module.exports = User;
+module.exports = Book;
