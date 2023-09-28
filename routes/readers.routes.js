@@ -9,15 +9,21 @@ router.get('/readers', (req, res) => {
 });
 //  POST /api/readers  -  Creates a new reader
 router.post('/readers', (req, res) => {
-  const { name, jointdate, active, borrowed_books } = req.body;
-  // console.log(jointdate, active);
+  const { name, dob, registrationDate, email } = req.body;
+
   return Reader.create({
     name,
-    jointdate,
-    active,
-    borrowed_books
+    registration_date: registrationDate,
+    active: true,
+    email,
+    dob
   })
-    .then((response) => res.json(response))
+    .then(() =>
+      res.json({
+        success: true,
+        message: 'Reader creation successful'
+      })
+    )
     .catch((err) => res.json(err));
 });
 
