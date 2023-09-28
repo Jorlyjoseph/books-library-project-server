@@ -21,6 +21,15 @@ app.use('/api', indexRoutes);
 const authRoutes = require('./routes/auth.routes');
 app.use('/api', authRoutes);
 
+const booksRoutes = require('./routes/books.routes');
+app.use('/api', booksRoutes);
+
+const readersRoutes = require('./routes/readers.routes');
+app.use('/api', readersRoutes);
+
+const logsRoutes = require('./routes/log.routes');
+app.use('/api', logsRoutes);
+
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require('./error-handling')(app);
 
