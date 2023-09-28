@@ -4,7 +4,7 @@ const { Schema, model } = require('mongoose');
 // TODO: Please make sure you edit the User model to whatever makes sense in this case
 const bookSchema = new Schema(
   {
-    reader: {
+    readerId: {
       type: ObjectId,
       ref: 'Readers'
     },

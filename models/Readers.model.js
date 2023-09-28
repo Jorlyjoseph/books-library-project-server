@@ -8,6 +8,14 @@ const readerSchema = new Schema(
       type: String,
       required: [true, 'Name required']
     },
+    dob: {
+      type: Date,
+      required: [true, 'DOB is required']
+    },
+    email: {
+      type: String,
+      required: [true, 'Email is required']
+    },
     registration_date: {
       type: Date,
       required: [true, 'registration date required']
