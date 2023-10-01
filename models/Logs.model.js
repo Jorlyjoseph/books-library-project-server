@@ -1,4 +1,3 @@
-const { ObjectId } = require('bson');
 const { Schema, model } = require('mongoose');
 
 // TODO: Please make sure you edit the User model to whatever makes sense in this case
@@ -9,12 +8,12 @@ const logSchema = new Schema(
       required: true
     },
     book_id: {
-      type: ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'Books',
       required: true
     },
     reader_id: {
-      type: ObjectId,
+      type: Schema.Types.ObjectId,
       ref: 'Readers',
       required: true
     },

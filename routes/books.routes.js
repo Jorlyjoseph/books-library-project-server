@@ -66,7 +66,7 @@ router.get('/books/search', (req, res, next) => {
 
 //  GET /api/books/:bookId -  Retrieves a specific book by id
 router.get('/books/:bookId', (req, res, next) => {
-  const { booksId } = req.params;
+  const { bookId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(bookId)) {
     res.status(400).json({ message: 'Specified id is not valid' });
@@ -74,6 +74,7 @@ router.get('/books/:bookId', (req, res, next) => {
   }
 
   Books.findById(bookId)
+    // .populate('reader_id')
     .then((book) => res.status(200).json(book))
     .catch((error) => res.json(error));
 });

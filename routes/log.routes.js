@@ -43,7 +43,7 @@ router.post('/logs/transaction', (req, res, next) => {
 
   if (type === 'lent') {
     Books.findByIdAndUpdate(bookId, {
-      readerId: readerId,
+      reader_id: readerId,
       available: false
     }).catch((error) => {
       res.json({ error: 'Oops! something went wrong' });
@@ -51,7 +51,7 @@ router.post('/logs/transaction', (req, res, next) => {
 
     Readers.updateOne(
       { _id: readerId },
-      { $push: { borrowed_books: bookId } }
+      { $addToSet: { borrowed_books: bookId } }
     ).catch((error) => {
       console.log(error);
       res.json({ error: 'Oops! something went wrong' });
@@ -60,7 +60,7 @@ router.post('/logs/transaction', (req, res, next) => {
 
   if (type === 'return') {
     Books.findByIdAndUpdate(bookId, {
-      readerId: null,
+      reader_id: null,
       available: true
     }).catch((error) => {
       res.json({ error: 'Oops! something went wrong' });
