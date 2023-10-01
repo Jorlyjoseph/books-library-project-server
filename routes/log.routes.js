@@ -80,4 +80,18 @@ router.post('/logs/transaction', (req, res, next) => {
   });
 });
 
+router.get('/logs/book/:bookId', (req, res, next) => {
+  // search with logs with bookid
+  //
+  const { bookId } = req.params;
+
+  Log.find({ book_id: bookId })
+    .then((logs) => {
+      res.status(200).json(logs);
+    })
+    .catch(() => {
+      res.status(500).send('Server error');
+    });
+});
+
 module.exports = router;
