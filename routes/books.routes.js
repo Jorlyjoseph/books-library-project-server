@@ -18,9 +18,9 @@ router.post('/books', (req, res, next) => {
     published,
     location,
     description,
-    avilable
+    available
   } = req.body;
-  console.log(author, avilable);
+
   return Books.create({
     isbn,
     title,
@@ -30,7 +30,7 @@ router.post('/books', (req, res, next) => {
     published,
     location,
     description,
-    avilable: true
+    available: true
   })
     .then((response) => res.json(response))
     .catch((err) => res.json(err));

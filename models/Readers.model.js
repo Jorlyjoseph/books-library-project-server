@@ -16,10 +16,6 @@ const readerSchema = new Schema(
       type: String,
       required: [true, 'Email is required']
     },
-    registration_date: {
-      type: Date,
-      required: [true, 'registration date required']
-    },
     active: {
       type: Boolean,
       required: [true, 'Active required'],
@@ -27,10 +23,14 @@ const readerSchema = new Schema(
     },
     borrowed_books: [
       {
-        type: ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'Books'
       }
-    ]
+    ],
+    registration_date: {
+      type: Date,
+      required: [true, 'registration date required']
+    }
   },
 
   {
