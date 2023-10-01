@@ -59,7 +59,7 @@ router.put('/readers/:readerId', (req, res, next) => {
   }
 
   Reader.findByIdAndUpdate(readerId, { name, dob, email, active })
-    .then((updatedReader) =>
+    .then(() =>
       res.json({
         success: true,
         message: 'Reader updated successfully'
@@ -67,7 +67,5 @@ router.put('/readers/:readerId', (req, res, next) => {
     )
     .catch((error) => res.json(error));
 });
-
-//acivate and deactivate api(true or false)
 
 module.exports = router;
