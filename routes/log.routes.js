@@ -37,30 +37,41 @@ router.post('/logs/transaction', (req, res, next) => {
     reader_id: readerId,
     time: date,
     transaction_type: type
-  }).catch((error) => res.json(error));
+  }).catch((error) => {
+    res.json({ error: 'Oops! something went wrong' });
+  });
 
   if (type === 'lent') {
     Books.findByIdAndUpdate(bookId, {
       readerId: readerId,
       available: false
-    }).catch((error) => res.json(error));
+    }).catch((error) => {
+      res.json({ error: 'Oops! something went wrong' });
+    });
 
     Readers.updateOne(
       { _id: readerId },
       { $push: { borrowed_books: bookId } }
-    ).catch((error) => res.json(error));
+    ).catch((error) => {
+      console.log(error);
+      res.json({ error: 'Oops! something went wrong' });
+    });
   }
 
   if (type === 'return') {
     Books.findByIdAndUpdate(bookId, {
       readerId: null,
       available: true
-    }).catch((error) => res.json(error));
+    }).catch((error) => {
+      res.json({ error: 'Oops! something went wrong' });
+    });
 
     Readers.updateOne(
       { _id: readerId },
       { $pull: { borrowed_books: { $eq: bookId } } }
-    ).catch((error) => res.json(error));
+    ).catch((error) => {
+      res.json({ error: 'Oops! something went wrong' });
+    });
   }
 
   res.status(200).json({
