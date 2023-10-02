@@ -5,7 +5,7 @@ const bookSchema = new Schema(
   {
     reader_id: {
       type: Schema.Types.ObjectId,
-      ref: 'Readers'
+      ref: 'Reader'
     },
     isbn: {
       type: String,

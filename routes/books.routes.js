@@ -74,7 +74,7 @@ router.get('/books/:bookId', (req, res, next) => {
   }
 
   Books.findById(bookId)
-    // .populate('reader_id')
+    .populate('reader_id')
     .then((book) => res.status(200).json(book))
     .catch((error) => res.json(error));
 });

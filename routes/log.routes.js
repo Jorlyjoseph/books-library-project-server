@@ -37,47 +37,57 @@ router.post('/logs/transaction', (req, res, next) => {
     reader_id: readerId,
     time: date,
     transaction_type: type
-  }).catch((error) => {
-    res.json({ error: 'Oops! something went wrong' });
-  });
+  })
+    .then(() => {
+      if (type === 'lent') {
+        Books.findByIdAndUpdate(
+          bookId,
+          {
+            reader_id: readerId,
+            available: false
+          },
+          { new: true }
+        )
+          .then((updatedBook) => {
+            res.json(updatedBook);
+            return;
+          })
+          .catch((error) => {
+            res.json({ error: 'Oops! something went wrong' });
+          });
 
-  if (type === 'lent') {
-    Books.findByIdAndUpdate(bookId, {
-      reader_id: readerId,
-      available: false
-    }).catch((error) => {
+        Readers.updateOne(
+          { _id: readerId },
+          { $addToSet: { borrowed_books: bookId } }
+        ).catch((error) => {
+          console.log(error);
+          res.json({ error: 'Oops! something went wrong' });
+        });
+      }
+
+      if (type === 'return') {
+        Books.findByIdAndUpdate(bookId, {
+          reader_id: null,
+          available: true
+        }).then(() => {
+          res.json({
+            success: true,
+            message: 'Book return successful'
+          });
+          return;
+        });
+
+        Readers.updateOne(
+          { _id: readerId },
+          { $pull: { borrowed_books: { $eq: bookId } } }
+        ).catch((error) => {
+          res.json({ error: 'Oops! something went wrong' });
+        });
+      }
+    })
+    .catch((error) => {
       res.json({ error: 'Oops! something went wrong' });
     });
-
-    Readers.updateOne(
-      { _id: readerId },
-      { $addToSet: { borrowed_books: bookId } }
-    ).catch((error) => {
-      console.log(error);
-      res.json({ error: 'Oops! something went wrong' });
-    });
-  }
-
-  if (type === 'return') {
-    Books.findByIdAndUpdate(bookId, {
-      reader_id: null,
-      available: true
-    }).catch((error) => {
-      res.json({ error: 'Oops! something went wrong' });
-    });
-
-    Readers.updateOne(
-      { _id: readerId },
-      { $pull: { borrowed_books: { $eq: bookId } } }
-    ).catch((error) => {
-      res.json({ error: 'Oops! something went wrong' });
-    });
-  }
-
-  res.status(200).json({
-    success: true,
-    message: 'Transaction added successfully'
-  });
 });
 
 router.get('/logs/book/:bookId', (req, res, next) => {
