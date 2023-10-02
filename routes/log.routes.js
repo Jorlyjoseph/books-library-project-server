@@ -3,8 +3,8 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const Log = require('../models/Logs.model');
-const Books = require('../models/Books.model');
-const Readers = require('../models/Readers.model');
+const Book = require('../models/Books.model');
+const Reader = require('../models/Readers.model');
 
 //get logs by bookId
 
@@ -40,7 +40,7 @@ router.post('/logs/transaction', (req, res, next) => {
   })
     .then(() => {
       if (type === 'lent') {
-        Books.findByIdAndUpdate(
+        Book.findByIdAndUpdate(
           bookId,
           {
             reader_id: readerId,
@@ -56,7 +56,7 @@ router.post('/logs/transaction', (req, res, next) => {
             res.json({ error: 'Oops! something went wrong' });
           });
 
-        Readers.updateOne(
+        Reader.updateOne(
           { _id: readerId },
           { $addToSet: { borrowed_books: bookId } }
         ).catch((error) => {
@@ -66,7 +66,7 @@ router.post('/logs/transaction', (req, res, next) => {
       }
 
       if (type === 'return') {
-        Books.findByIdAndUpdate(bookId, {
+        Book.findByIdAndUpdate(bookId, {
           reader_id: null,
           available: true
         }).then(() => {
@@ -77,7 +77,7 @@ router.post('/logs/transaction', (req, res, next) => {
           return;
         });
 
-        Readers.updateOne(
+        Reader.updateOne(
           { _id: readerId },
           { $pull: { borrowed_books: { $eq: bookId } } }
         ).catch((error) => {
@@ -96,6 +96,7 @@ router.get('/logs/book/:bookId', (req, res, next) => {
   const { bookId } = req.params;
 
   Log.find({ book_id: bookId })
+    .populate('reader_id', 'name')
     .then((logs) => {
       res.status(200).json(logs);
     })

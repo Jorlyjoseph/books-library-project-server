@@ -9,12 +9,12 @@ const logSchema = new Schema(
     },
     book_id: {
       type: Schema.Types.ObjectId,
-      ref: 'Books',
+      ref: 'Book',
       required: true
     },
     reader_id: {
       type: Schema.Types.ObjectId,
-      ref: 'Readers',
+      ref: 'Reader',
       required: true
     },
     transaction_type: {
