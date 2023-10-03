@@ -34,6 +34,19 @@ router.get('/readers', (req, res, next) => {
     .catch((err) => res.json(err));
 });
 
+router.get('/readers/search', (req, res, next) => {
+  const { query } = req.query;
+  const reg = new RegExp(query, 'i');
+
+  Reader.find({ name: { $regex: reg } })
+    .then((readers) => {
+      res.status(200).json(readers);
+    })
+    .catch(() => {
+      res.status(500).send('Server error');
+    });
+});
+
 //  GET /api/readers/:readerId -  Retrieves a specific reader by id
 router.get('/readers/:readerId', (req, res, next) => {
   const { readerId } = req.params;
