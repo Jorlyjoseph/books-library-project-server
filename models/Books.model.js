@@ -19,7 +19,7 @@ const bookSchema = new Schema(
       type: String,
       required: [true, 'Author required']
     },
-    catagory: {
+    category: {
       type: String,
       required: [true, 'Category required']
     },
@@ -39,6 +39,9 @@ const bookSchema = new Schema(
     available: {
       type: Boolean,
       required: [true, 'Availability required']
+    },
+    image_url: {
+      type: String
     }
   },
 

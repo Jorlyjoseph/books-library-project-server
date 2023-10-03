@@ -13,24 +13,26 @@ router.post('/books', (req, res, next) => {
     isbn,
     title,
     author,
-    catagory,
+    category,
     language,
     published,
     location,
     description,
-    available
+    imageUrl
   } = req.body;
-
+  // res.send(req.body);
+  // return;
   return Books.create({
     isbn,
     title,
     author,
-    catagory,
+    category,
     language,
     published,
     location,
     description,
-    available: true
+    available: true,
+    image_url: imageUrl
   })
     .then((response) => res.json(response))
     .catch((err) => res.json(err));
