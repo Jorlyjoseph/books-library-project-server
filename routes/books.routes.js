@@ -1,14 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
-
 const Book = require('../models/Books.model');
+const { isAuthenticated } = require('../middleware/jwt.middleware');
 
-router.get('/books', (req, res) => {
-  res.send('books route is working');
-});
 //  POST /api/books  -  Creates a new book
-router.post('/books', (req, res, next) => {
+router.post('/books', isAuthenticated, (req, res, next) => {
   const {
     isbn,
     title,
@@ -20,8 +17,7 @@ router.post('/books', (req, res, next) => {
     description,
     imageUrl
   } = req.body;
-  // res.send(req.body);
-  // return;
+
   return Book.create({
     isbn,
     title,
@@ -40,8 +36,6 @@ router.post('/books', (req, res, next) => {
 
 //  GET /api/books -  Retrieves all of the books
 router.get('/books/search', (req, res, next) => {
-  // search with title, author
-  //
   const { query, category } = req.query;
   const reg = new RegExp(query, 'i');
 
@@ -69,7 +63,7 @@ router.get('/books/search', (req, res, next) => {
 });
 
 //  GET /api/books/:bookId -  Retrieves a specific book by id
-router.get('/books/:bookId', (req, res, next) => {
+router.get('/books/:bookId', isAuthenticated, (req, res, next) => {
   const { bookId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(bookId)) {
@@ -84,7 +78,7 @@ router.get('/books/:bookId', (req, res, next) => {
 });
 
 // PUT  /api/books/:booksId  -  Updates a specific book by id
-router.put('/books/:bookId', (req, res, next) => {
+router.put('/books/:bookId', isAuthenticated, (req, res, next) => {
   const { bookId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(bookId)) {
@@ -98,7 +92,7 @@ router.put('/books/:bookId', (req, res, next) => {
 });
 
 // DELETE  /api/books/:bookId  -  Deletes a specific book by id
-router.delete('/books/:bookId', (req, res, next) => {
+router.delete('/books/:bookId', isAuthenticated, (req, res, next) => {
   const { bookId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(bookId)) {
