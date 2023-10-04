@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 
-const Books = require('../models/Books.model');
+const Book = require('../models/Books.model');
 
 router.get('/books', (req, res) => {
   res.send('books route is working');
@@ -22,7 +22,7 @@ router.post('/books', (req, res, next) => {
   } = req.body;
   // res.send(req.body);
   // return;
-  return Books.create({
+  return Book.create({
     isbn,
     title,
     author,
@@ -46,7 +46,8 @@ router.get('/books/search', (req, res, next) => {
   const reg = new RegExp(query, 'i');
 
   if (category === 'title') {
-    Books.find({ title: { $regex: reg } })
+    Book.find({ title: { $regex: reg } })
+      .populate('reader_id', 'name')
       .then((books) => {
         res.status(200).json(books);
       })
@@ -56,7 +57,8 @@ router.get('/books/search', (req, res, next) => {
   }
 
   if (category === 'author') {
-    Books.find({ author: { $regex: reg } })
+    Book.find({ author: { $regex: reg } })
+      .populate('reader_id', 'name')
       .then((books) => {
         res.status(200).json(books);
       })
@@ -75,8 +77,8 @@ router.get('/books/:bookId', (req, res, next) => {
     return;
   }
 
-  Books.findById(bookId)
-    .populate('reader_id')
+  Book.findById(bookId)
+    .populate('reader_id', 'name')
     .then((book) => res.status(200).json(book))
     .catch((error) => res.json(error));
 });
@@ -90,7 +92,7 @@ router.put('/books/:bookId', (req, res, next) => {
     return;
   }
 
-  Books.findByIdAndUpdate(bookId, req.body, { new: true })
+  Book.findByIdAndUpdate(bookId, req.body, { new: true })
     .then((updatedBook) => res.json(updatedBook))
     .catch((error) => res.json(error));
 });
@@ -104,7 +106,7 @@ router.delete('/books/:bookId', (req, res, next) => {
     return;
   }
 
-  Books.findByIdAndRemove(bookId)
+  Book.findByIdAndRemove(bookId)
     .then(() =>
       res.json({
         message: `Project with ${bookId} is removed successfully.`
