@@ -1,24 +1,34 @@
 const { Schema, model } = require('mongoose');
 
 // TODO: Please make sure you edit the User model to whatever makes sense in this case
-const userSchema = new Schema(
+const readerSchema = new Schema(
   {
     name: {
       type: String,
-      required: true
+      required: [true, 'Name required']
     },
-    jointdate: {
-      type: date,
-      required: true
+    dob: {
+      type: Date,
+      required: [true, 'DOB is required']
+    },
+    email: {
+      type: String,
+      required: [true, 'Email is required']
     },
     active: {
       type: Boolean,
-      required: true,
-      default: false
+      required: [true, 'Active required'],
+      default: true
     },
-    borrowed_books: {
-      type: Boolean,
-      required: true
+    borrowed_books: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Books'
+      }
+    ],
+    registration_date: {
+      type: Date,
+      required: [true, 'registration date required']
     }
   },
 
@@ -28,6 +38,6 @@ const userSchema = new Schema(
   }
 );
 
-const User = model('User', userSchema);
+const Reader = model('Reader', readerSchema);
 
-module.exports = User;
+module.exports = Reader;

@@ -1,22 +1,25 @@
 const { Schema, model } = require('mongoose');
 
 // TODO: Please make sure you edit the User model to whatever makes sense in this case
-const userSchema = new Schema(
+const logSchema = new Schema(
   {
     time: {
       type: Date,
       required: true
     },
     book_id: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: 'Book',
       required: true
     },
     reader_id: {
-      type: String,
+      type: Schema.Types.ObjectId,
+      ref: 'Reader',
       required: true
     },
     transaction_type: {
       type: String,
+      enum: ['lent', 'return'],
       required: true
     }
   },
@@ -27,6 +30,6 @@ const userSchema = new Schema(
   }
 );
 
-const User = model('User', userSchema);
+const Log = model('Log', logSchema);
 
-module.exports = User;
+module.exports = Log;
