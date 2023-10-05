@@ -61,7 +61,27 @@ router.get('/readers/:readerId', (req, res, next) => {
     .catch((error) => res.json(error));
 });
 
+// Delete a specific reader by id
+
+router.delete('/reader/:readerId/remove', (req, res, next) => {
+  const { readerId } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(readerId)) {
+    res.status(400).json({ message: 'Specified id is not valid' });
+    return;
+  }
+
+  Reader.findByIdAndRemove(readerId)
+    .then(() =>
+      res.json({
+        message: ` ${readerId} is removed successfully.`
+      })
+    )
+    .catch((error) => res.json(error));
+});
+
 // PUT  /api/readers/:readersId  -  Updates a specific reader by id
+
 router.put('/readers/:readerId', (req, res, next) => {
   const { readerId } = req.params;
   const { name, dob, email, active } = req.body;

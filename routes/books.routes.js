@@ -91,8 +91,8 @@ router.put('/books/:bookId', isAuthenticated, (req, res, next) => {
     .catch((error) => res.json(error));
 });
 
-// DELETE  /api/books/:bookId  -  Deletes a specific book by id
-router.delete('/books/:bookId', isAuthenticated, (req, res, next) => {
+// DELETE  /api/books/:bookId/remove  -  Deletes a specific book by id
+router.delete('/books/:bookId/remove', isAuthenticated, (req, res, next) => {
   const { bookId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(bookId)) {
@@ -103,7 +103,7 @@ router.delete('/books/:bookId', isAuthenticated, (req, res, next) => {
   Book.findByIdAndRemove(bookId)
     .then(() =>
       res.json({
-        message: `Project with ${bookId} is removed successfully.`
+        message: `${bookId} is removed successfully.`
       })
     )
     .catch((error) => res.json(error));
