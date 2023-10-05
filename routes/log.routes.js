@@ -3,8 +3,8 @@ const router = express.Router();
 const mongoose = require('mongoose');
 
 const Log = require('../models/Logs.model');
-const Books = require('../models/Books.model');
-const Readers = require('../models/Readers.model');
+const Book = require('../models/Books.model');
+const Reader = require('../models/Readers.model');
 
 //get logs by bookId
 
@@ -37,47 +37,72 @@ router.post('/logs/transaction', (req, res, next) => {
     reader_id: readerId,
     time: date,
     transaction_type: type
-  }).catch((error) => {
-    res.json({ error: 'Oops! something went wrong' });
-  });
+  })
+    .then(() => {
+      if (type === 'lent') {
+        Book.findByIdAndUpdate(
+          bookId,
+          {
+            reader_id: readerId,
+            available: false
+          },
+          { new: true }
+        )
+          .then((updatedBook) => {
+            res.json(updatedBook);
+            return;
+          })
+          .catch((error) => {
+            res.json({ error: 'Oops! something went wrong' });
+          });
 
-  if (type === 'lent') {
-    Books.findByIdAndUpdate(bookId, {
-      readerId: readerId,
-      available: false
-    }).catch((error) => {
+        Reader.updateOne(
+          { _id: readerId },
+          { $addToSet: { borrowed_books: bookId } }
+        ).catch((error) => {
+          console.log(error);
+          res.json({ error: 'Oops! something went wrong' });
+        });
+      }
+
+      if (type === 'return') {
+        Book.findByIdAndUpdate(bookId, {
+          reader_id: null,
+          available: true
+        }).then(() => {
+          res.json({
+            success: true,
+            message: 'Book return successful'
+          });
+          return;
+        });
+
+        Reader.updateOne(
+          { _id: readerId },
+          { $pull: { borrowed_books: { $eq: bookId } } }
+        ).catch((error) => {
+          res.json({ error: 'Oops! something went wrong' });
+        });
+      }
+    })
+    .catch((error) => {
       res.json({ error: 'Oops! something went wrong' });
     });
+});
 
-    Readers.updateOne(
-      { _id: readerId },
-      { $push: { borrowed_books: bookId } }
-    ).catch((error) => {
-      console.log(error);
-      res.json({ error: 'Oops! something went wrong' });
+router.get('/logs/book/:bookId', (req, res, next) => {
+  // search with logs with bookid
+  //
+  const { bookId } = req.params;
+
+  Log.find({ book_id: bookId })
+    .populate('reader_id', 'name')
+    .then((logs) => {
+      res.status(200).json(logs);
+    })
+    .catch(() => {
+      res.status(500).send('Server error');
     });
-  }
-
-  if (type === 'return') {
-    Books.findByIdAndUpdate(bookId, {
-      readerId: null,
-      available: true
-    }).catch((error) => {
-      res.json({ error: 'Oops! something went wrong' });
-    });
-
-    Readers.updateOne(
-      { _id: readerId },
-      { $pull: { borrowed_books: { $eq: bookId } } }
-    ).catch((error) => {
-      res.json({ error: 'Oops! something went wrong' });
-    });
-  }
-
-  res.status(200).json({
-    success: true,
-    message: 'Transaction added successfully'
-  });
 });
 
 module.exports = router;

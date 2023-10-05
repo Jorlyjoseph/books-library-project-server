@@ -1,12 +1,11 @@
-const { ObjectId } = require('bson');
 const { Schema, model } = require('mongoose');
 
 // TODO: Please make sure you edit the User model to whatever makes sense in this case
 const bookSchema = new Schema(
   {
-    readerId: {
-      type: ObjectId,
-      ref: 'Readers'
+    reader_id: {
+      type: Schema.Types.ObjectId,
+      ref: 'Reader'
     },
     isbn: {
       type: String,
@@ -20,7 +19,7 @@ const bookSchema = new Schema(
       type: String,
       required: [true, 'Author required']
     },
-    catagory: {
+    category: {
       type: String,
       required: [true, 'Category required']
     },
@@ -40,6 +39,9 @@ const bookSchema = new Schema(
     available: {
       type: Boolean,
       required: [true, 'Availability required']
+    },
+    image_url: {
+      type: String
     }
   },
 
