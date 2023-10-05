@@ -46,7 +46,7 @@ router.get('/books/search', (req, res, next) => {
         res.status(200).json(books);
       })
       .catch(() => {
-        res.status(500).send('Server error');
+        res.status(500).send({ message: 'Server error' });
       });
   }
 
@@ -57,7 +57,7 @@ router.get('/books/search', (req, res, next) => {
         res.status(200).json(books);
       })
       .catch(() => {
-        res.status(500).send('Server error');
+        res.status(500).send({ message: 'Server error' });
       });
   }
 });
@@ -106,7 +106,7 @@ router.delete('/books/:bookId/remove', isAuthenticated, (req, res, next) => {
         message: `${bookId} is removed successfully.`
       })
     )
-    .catch((error) => res.json(error));
+    .catch((error) => res.json({ message: 'Delete failed' }));
 });
 
 module.exports = router;
